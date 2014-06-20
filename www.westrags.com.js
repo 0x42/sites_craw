@@ -1,26 +1,12 @@
  /*jshint node: true, indent:2, loopfunc: true, asi: true, undef:true*/
 /*global app: false, jQuery: false, $: false, window: false, _: false, document: false*/
 "use strict";
-exports.siteId = 'www.gucci.com/it/home'
+exports.siteId = 'http://www.westrags.com/pt/'
 
 
 exports.entranceUrls = function(page){
-  var sitemap = 'http://store.dolcegabbana.com/sitemap.asp?tskay=3B552831&site=DGGROUP';
-  page.navigate(sitemap);
-  var newUrls = page.evaluate(function() {
-  	var ans = [];
-  	var sm = $("#container").find(".sitemap");
-  	var boxed = $(sm).find(".boxed");
-  	for(var i = 0; i < 2; i++) {
-  		var a = $(boxed[i]).find("a");
-  		for(var j = 0; j < a.length; j++) {
-  			var href = a[j].href;
-  			ans.push({url:href, code:href});
-  		}
-  	}
-  	return ans;
-  });
-  return newUrls;
+  var url = 'http://www.westrags.com/pt/';
+  return [{url: url, code: url}];
 }
 
 exports.parse = function(url, page, saveFile) {
@@ -82,9 +68,6 @@ exports.parse = function(url, page, saveFile) {
     	}
     	return color;
     });
-
-    p(v);
-    p(v.length);
 	
 	product.variations = [];
 	product.images = [];    
@@ -115,8 +98,6 @@ exports.parse = function(url, page, saveFile) {
 	    	  return src;
 	    	}, i);	
 		}
-    	
-    	p(imgSrc);
 
     	if(imgSrc !== null) {
     		var save = saveFile(product.id, imgSrc);
@@ -142,9 +123,9 @@ exports.parse = function(url, page, saveFile) {
     			ans.price = window.parseFloat(b[0]+"."+b[1]);
     		}
     		if(psTxt !== null) {
-    			var buf = psTxt.split(" ");
-    			var b = buf[1].split(",");
-    			ans.sellPrice = window.parseFloat(b[0]+"."+b[1]);	
+    			var buf2 = psTxt.split(" ");
+    			var b2 = buf2[1].split(",");
+    			ans.sellPrice = window.parseFloat(b2[0]+"."+b2[1]);	
     		}
     		// size
     		var sArr = jQuery("#product_size>div:visible");
@@ -152,6 +133,7 @@ exports.parse = function(url, page, saveFile) {
     		for(var sI = 0; sI < sArr.length; sI++) {
     			s.push(jQuery(sArr[sI]).text());
     		}
+        if(c === "") c = "no color";
     		ans.color = c;
     		// ans.push(p);
     		ans.size = s;
@@ -174,19 +156,64 @@ exports.parse = function(url, page, saveFile) {
     });
 
   } else {
-  	var urls = page.evaluate(function(e) { 
-  		var menu = jQuery("#loja5_menu").find(".subTop");
-	  	var links = [];
-	  	for(var i = 1; i < (menu.length - 2); i++) {
-	  		var arr = jQuery(menu[i]).find("a:not(.vertodas)");
-	  		for(var ii = 1; ii < arr.length; ii++) {
-	  			links.push(arr[ii].href);
-	  		}
-	  	}
-	  	return links;
-  	});
-  	p("======= URLS =======");
-  	p(urls);
+    // check start page or product catalog
+    var startPage = page.evaluate(function(e) {
+      var d = jQuery("#loja5_mainbody>div.row");
+      if(d.length === 0) return true;
+      else return false;
+    });
+    var urls = null;
+    if(startPage) {
+      // read menu urls
+      urls = page.evaluate(function(e) { 
+        var menu = jQuery("#loja5_menu").find(".subTop");
+        var links = [];
+        for(var i = 1; i < (menu.length - 2); i++) {
+          var arr = jQuery(menu[i]).find("a:not(.vertodas)");
+          for(var ii = 1; ii < arr.length; ii++) {
+            links.push(arr[ii].href);
+          }
+        }
+        return links;
+      });
+    } else {
+      // scroll page
+      var endPage = false;
+      var nScroll = 0;
+      while(endPage === false) {
+        app.helpers.wait(300);
+        endPage = page.evaluate(function(e) {
+          var pos = jQuery("#loja5_baixo").offset().top;
+          jQuery(document).scrollTop(pos);
+          var end = jQuery(".mensage_products");
+          if(end.length === 0) return false;
+          else return true;
+        });
+        if(nScroll === 100) break; // long long page -> throw excep timeout
+        nScroll++;  
+      }
+      // read all urls to datails off products
+      urls = page.evaluate(function(e) {
+        var d = jQuery("#loja5_mainbody>div.row");
+        var ans = [];
+        for(var dI = 0; dI < d.length; dI++) {
+          var durls = jQuery(d[dI]).find(".sku>a");
+          if(durls.length > 0) {
+            for(var durlsI = 0; durlsI < durls.length; durlsI++) {
+              ans.push(durls[durlsI].href);
+            }
+          }
+        }
+        return ans;
+      });
+    }
+  	// p("======= URLS =======");
+
+    if(urls.length > 0 ) newUrls = [];
+    for(var j = 0; j < urls.length; j++) {
+        if(urls[j].indexOf("www.westrags.com") > -1)
+          newUrls.push({url:urls[j], code:urls[j]});
+    }
   }
   // p(product);
   // p("======= finish =======");
