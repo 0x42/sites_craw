@@ -22,9 +22,9 @@ var urlProduct6 = 'http://www.westrags.com/en/loja/25178-camisola-selected-detai
 var urlCat = "http://www.westrags.com/en/";
 var urlCat2 = "http://www.westrags.com/en/loja/mulher";
 var urlCat3 = 'http://www.westrags.com/pt/loja/acessorios/1105-relogios';
-// var result = arachnid.inspectUrl(siteId, urlProduct6, parser);
+var result = arachnid.inspectUrl(siteId, urlProduct6, parser);
 // var uuu =  arachnid.inspectEntranceUrls(siteId, parser);
-var result = arachnid.crawl(siteId, parser);
+// var result = arachnid.crawl(siteId, parser);
    // p("urls:");
    // p(result[0]);
    // p("product:");
