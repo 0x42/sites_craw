@@ -24,7 +24,7 @@ exports.entranceUrls = function(page){
 }
 
 exports.parse = function(url, page, saveFile) {
-//  p("0x42: parse run");
+ // p("0x42: parse run");
 //  p("0x42: " + url)
   page.navigate(url);
   var newUrls = null;
@@ -66,10 +66,19 @@ exports.parse = function(url, page, saveFile) {
   function getVariation() {
     var variation = page.evaluate(function() {
       var ans = {};
+      ans.img = [];
       //image
-      $('.zoom_out').click();
+      var view = $("#view_thumbs_list>li.view");
+      for(var vI = 0; vI < view.length; vI++) {
+        
+        $(view[vI]).click();
+        $('.zoom_out').click();
+        var viewImgSrc = $('#zoom_in_window img').attr('src');
+        ans.img.push(viewImgSrc);   
+      }
+      
       // var imageTag = $("#zoom_view").find(".zoom_out img");
-      ans.img = $('#zoom_in_window img').attr('src');
+      
       // if(imageTag.length == 1)
       //   ans.img = imageTag.attr("src");
       // available
@@ -89,23 +98,30 @@ exports.parse = function(url, page, saveFile) {
       ans.color = $("#product_card").find("#description li:first").html();
       return ans;
     });
-
     if(variation.selectSize !== undefined && variation.selectSize > 0) {
       variation.sizes = getSizeAvail(variation.selectSize);
     }
     return variation;
   }
 
-  function printVariation(v) {
-    // p("price " + v.price);
-    // p("color " + v.color);
-    // p("available " + v.available);
-  }
-
   function setParam(v) {
     if(v.img !== undefined) {
-      var save = saveFile(product.id, v.img);
-      product.images.push({id:save[0], url: save[1], originalUrl: product.url});
+      var buff = [];
+      for(var imgI = 0; imgI < v.img.length; imgI++) {
+        var flag = false;
+        for(var ii = 0; ii < buff.length; ii++) {
+          if( buff[ii] == v.img[imgI]) {
+            flag = true;
+            break;
+          }
+        }
+        if(flag === false) {
+          buff.push(v.img[imgI]);
+          var save = saveFile(product.id, v.img[imgI]);
+          product.images.push({id:save[0], url: save[1], originalUrl: product.url});  
+        }
+          
+      }
     }
     var obj = {};
     if(v.price !== undefined) obj.price = v.price;
@@ -124,12 +140,12 @@ exports.parse = function(url, page, saveFile) {
       product.variations.push(obj);
     } else {
       var nSize = v.sizes.length;
-      for(var ii = 0; ii < nSize; ii++) {
+      for(var k = 0; k < nSize; k++) {
         var buf = {};
         buf.price = obj.price;
         buf.color = obj.color;
-        buf.size = v.sizes[ii][0];
-        buf.available = v.sizes[ii][1];
+        buf.size = v.sizes[k][0];
+        buf.available = v.sizes[k][1];
         product.variations.push(buf);
       }
       // p("-------------------");
@@ -203,14 +219,11 @@ exports.parse = function(url, page, saveFile) {
     product.id = app.helpers.hash(url);
     product.images = [];
 
-
     if(prod.varUrlN !== undefined) {
       product.variations = [];
       // p("N variation = " + prod.varUrlN);
       var nVar = Number(prod.varUrlN) + 1;
       var v = getVariation();
-
-
       setParam(v);
       for(var i = 1; i < nVar; i++) {
         //var prevUrl = page.url();
@@ -230,8 +243,20 @@ exports.parse = function(url, page, saveFile) {
       var varBuf = getVariation();
       // image
       if(varBuf.img !== undefined) {
-        var save = saveFile(product.id, varBuf.img);
-        product.images.push({id:save[0], url: save[1], originalUrl: product.url});
+        var bufImg = [];
+        for(var imgI=0; imgI<varBuf.img.length; imgI++) {
+          var flag = false;
+          for(var bI=0; bI< bufImg.length; bI++) {
+            if(bufImg[bI] == varBuf.img[imgI]) { 
+              flag = true; break; 
+            }
+          }
+          if(flag === false) {
+            bufImg.push(varBuf.img[imgI]);
+            var save = saveFile(product.id, varBuf.img[imgI]);
+            product.images.push({id:save[0], url: save[1], originalUrl: product.url});  
+          }
+        }
       }
       if(varBuf.sizes !== undefined) {
         product.variations = [];

@@ -33,14 +33,14 @@ var urlCatalog3 = 'http://www.gucci.com/it/category/m/men_s_ready_to_wear';
 var urlCatalog3_1 = 'http://www.gucci.com/it/looks/5322?extra=84';
 var urlCatalog3_2 = 'http://www.gucci.com/it/styles/318144Z75901000';
 
-var result = arachnid.inspectUrl(siteId, urlProduct2_1, parser);
+// var result = arachnid.inspectUrl(siteId, urlProduct, parser);
 // var uuu =  arachnid.inspectEntranceUrls(siteId, parser);
-//var result = arachnid.crawl(siteId, parser);  
-  p("urls:")
-  p(result[0])
-  p("product:")
-  p(result[1]) 
-  process.exit()
+var result = arachnid.crawl(siteId, parser);  
+  // p("urls:")
+  // p(result[0])
+  // p("product:")
+  // p(result[1]) 
+  // process.exit()
 })
 
 // http://alex-craft.com/documents/arachnid
