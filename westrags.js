@@ -17,14 +17,14 @@ var urlProduct3 = "http://www.westrags.com/en/loja/acessorios/208177-seiko-velat
 //sell price
 var urlProduct4 = 'http://www.westrags.com/en/loja/homem/36-calcado/62-botas-e-botins/65170-botin--eylets-pepe-jeans-london-detail.html';
 var urlProduct5 = 'http://www.westrags.com/pt/loja/mulher/10-textil/21-t-shirts/191665-boombap-lookback-tee-boat--women-detail.html';
-var urlProduct6 = 'http://www.westrags.com/en/loja/25178-camisola-selected-detail.html';
+var urlProduct6 = 'http://www.westrags.com/pt/loja/mulher/2-calcado/29-sandalias/42557-sandalia-coolway-detail.html';
 // test
 var urlCat = "http://www.westrags.com/en/";
 var urlCat2 = "http://www.westrags.com/en/loja/mulher";
 var urlCat3 = 'http://www.westrags.com/pt/loja/acessorios/1105-relogios';
-var result = arachnid.inspectUrl(siteId, urlProduct6, parser);
+// var result = arachnid.inspectUrl(siteId, urlProduct6, parser);
 // var uuu =  arachnid.inspectEntranceUrls(siteId, parser);
-// var result = arachnid.crawl(siteId, parser);
+var result = arachnid.crawl(siteId, parser);
    // p("urls:");
    // p(result[0]);
    // p("product:");

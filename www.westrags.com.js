@@ -3,9 +3,8 @@
 "use strict";
 exports.siteId = 'http://www.westrags.com/'
 
-
 exports.entranceUrls = function(page){
-  var url = 'http://www.westrags.com/pt/';
+  var url = 'http://www.westrags.com/en/';
   return [{url: url, code: url}];
 }
 
@@ -147,7 +146,8 @@ exports.parse = function(url, page, saveFile) {
       if(buf.size === '') buf.size = '0';
   		buf.color = items.color; 
   		buf.price = items.price;
-  		buf.available = true;
+      if(buf.size === '0') buf.available = false; 
+  		else buf.available = true;
   		if(items.sellPrice !== undefined)
   			buf.sellPrice = items.sellPrice;
   		product.variations.push(buf);	
