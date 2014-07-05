@@ -15,16 +15,16 @@ app.sync.fiber(function(){
 // test url one thing
 //  var urlT = 'http://www.ilgiocattolo.it/2/bici-senza-pedali/bici-pedagogica-senza-pedali-carabella-rolly-toys';
 //var url = 'http://www.gucci.com/it/home';
-var urlProduct = 'http://www.gucci.com/it/styles/354229AIZ1G7011#';
+var urlProduct = 'http://www.gucci.com/it/styles/307929AB8001000';
 // without variations/size 
-var urlProduct1 = 'http://www.gucci.com/it/styles/155148C54AT1060#';
+var urlProduct1 = 'http://www.gucci.com/it/styles/181447J84008106#';
 // no variations but with change size
 var urlProduct2 = 'http://www.gucci.com/it/styles/232781H90WG2061#';
 var urlProduct2_1 = 'http://www.gucci.com/it/styles/352983Z41714379#';
 // var = 12 + size
-var urlProduct3 = 'http://www.gucci.com/it/styles/114984AA61N1000#';
+var urlProduct3 = 'http://www.gucci.com/it/styles/307929AB8001000';
 // "catalog" is empty
-var urlProduct4 = "http://www.gucci.com/it/styles/307929AB8001000#";
+var urlProduct4 = "http://www.gucci.com/it/styles/307929AB8001000";
 // catalog
 var urlCatalog = 'http://www.gucci.com/it/category/u/watches#look74348lookA113';
 var urlCatalog2 = 'http://www.gucci.com/it/category/m/hats___gloves';
@@ -33,14 +33,14 @@ var urlCatalog3 = 'http://www.gucci.com/it/category/m/men_s_ready_to_wear';
 var urlCatalog3_1 = 'http://www.gucci.com/it/looks/5322?extra=84';
 var urlCatalog3_2 = 'http://www.gucci.com/it/styles/318144Z75901000';
 
-// var result = arachnid.inspectUrl(siteId, urlProduct, parser);
+var result = arachnid.inspectUrl(siteId, urlProduct, parser);
 // var uuu =  arachnid.inspectEntranceUrls(siteId, parser);
-var result = arachnid.crawl(siteId, parser);  
-  // p("urls:")
-  // p(result[0])
-  // p("product:")
-  // p(result[1]) 
-  // process.exit()
+// var result = arachnid.crawl(siteId, parser);  
+  p("urls:")
+  p(result[0])
+  p("product:")
+  p(result[1]) 
+  process.exit()
 })
 
 // http://alex-craft.com/documents/arachnid

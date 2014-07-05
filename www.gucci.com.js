@@ -41,6 +41,14 @@ exports.parse = function(url, page, saveFile) {
     // p("get size")
     var ans = [];
     var i = 0;
+    var buf = '';
+    if(sizeN > 0) {
+        buf = page.evaluate(function() {
+        return $("#size_dropdown").find("#style_wrapper_dropdown").val();
+      });  
+    }
+    // p("sizeN = " + sizeN)
+    var oldVal = '';
     for(; i < (sizeN); i++) {
       var size = page.evaluate(function(i) {
         var select = $("#size_dropdown").find("#style_wrapper_dropdown");
@@ -49,7 +57,19 @@ exports.parse = function(url, page, saveFile) {
         $(select[0]).change();
         return $(level[i]).text();
       }, i);
-      app.helpers.wait(50);
+      var newVal = page.evaluate(function(){
+        var sss = $("#size_dropdown").find("#style_wrapper_dropdown").val();
+        return sss;
+      });
+       app.helpers.wait(50);
+      // app.helpers.waitUntil(function() {
+      //   p('old =' + oldVal)
+      //   p('new = ' + newVal)
+      //   if(oldVal !== newVal) {
+      //     oldVal = newVal;
+      //     return true;
+      //   } else return false;
+      // });
       var flag = page.evaluate(function(){
         var available = false;
         var txt = $('#container_availability > p').text();
@@ -64,19 +84,18 @@ exports.parse = function(url, page, saveFile) {
   }
 
   function getVariation() {
+    var d1, d0 = new Date();
     var variation = page.evaluate(function() {
       var ans = {};
       ans.img = [];
       //image
       var view = $("#view_thumbs_list>li.view");
       for(var vI = 0; vI < view.length; vI++) {
-        
         $(view[vI]).click();
         $('.zoom_out').click();
         var viewImgSrc = $('#zoom_in_window img').attr('src');
         ans.img.push(viewImgSrc);   
       }
-      
       // var imageTag = $("#zoom_view").find(".zoom_out img");
       
       // if(imageTag.length == 1)
@@ -98,9 +117,14 @@ exports.parse = function(url, page, saveFile) {
       ans.color = $("#product_card").find("#description li:first").html();
       return ans;
     });
+
     if(variation.selectSize !== undefined && variation.selectSize > 0) {
       variation.sizes = getSizeAvail(variation.selectSize);
     }
+
+    d1 = new Date();
+    // p("variation time = ");
+    // p(d1-d0); 
     return variation;
   }
 
@@ -223,18 +247,28 @@ exports.parse = function(url, page, saveFile) {
       product.variations = [];
       // p("N variation = " + prod.varUrlN);
       var nVar = Number(prod.varUrlN) + 1;
+      
       var v = getVariation();
       setParam(v);
+      var oldU = page.url();
       for(var i = 1; i < nVar; i++) {
+        // p(" " + i);
         //var prevUrl = page.url();
         page.evaluate(function(i) {
           var li = $(".scrollable_variations li");
           $(li[i]).click();
         }, i);
-        app.helpers.wait(2000);
-            //  app.helpers.waitUntil(function(prevUrl) {
-            //    return page.url() != prevUrl;
-            //   });
+        // app.helpers.wait(2000);
+        
+        app.helpers.waitUntil(function() {
+          var uuu = page.url();
+          if(oldU !== uuu) {
+            oldU = uuu;
+            return true;
+          } 
+          return false; 
+        });
+
         var varThing = getVariation();
             //printVariation(v);
         setParam(varThing);
