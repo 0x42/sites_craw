@@ -7,9 +7,10 @@ exports.entranceUrls = function(page){
   var url = 'http://www.westrags.com/en/';
   return [{url: url, code: url}];
 }
-// --- parse ---
+// --- parse --- 
 exports.parse = function(url, page, saveFile) {
   page.navigate(url);
+  // :P
   var newUrls = null;
   var product = null;
   var isCatalog = page.evaluate(function(selector){
