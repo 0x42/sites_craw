@@ -7,7 +7,7 @@ exports.entranceUrls = function(page){
   var url = 'http://www.westrags.com/en/';
   return [{url: url, code: url}];
 }
-
+// --- parse ---
 exports.parse = function(url, page, saveFile) {
   page.navigate(url);
   var newUrls = null;
